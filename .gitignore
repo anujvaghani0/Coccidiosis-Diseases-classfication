@@ -164,3 +164,6 @@ artifacts/*
 cnncls/
 cnncls/*
 cnncls/**
+
+#vs code extension
+.vscode/*
