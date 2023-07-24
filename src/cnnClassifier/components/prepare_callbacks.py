@@ -8,12 +8,9 @@ from pathlib import Path
 
 
 class PrepareCallback:
-    def __init__(self, config: PrepareCallbacksConfig):
+    def __init__(self, config):
         self.config = config
-
-
-    
-    @property
+        
     def _create_tb_callbacks(self):
         timestamp = time.strftime("%Y-%m-%d-%H-%M-%S")
         tb_running_log_dir = os.path.join(
@@ -21,18 +18,19 @@ class PrepareCallback:
             f"tb_logs_at_{timestamp}",
         )
         return tf.keras.callbacks.TensorBoard(log_dir=tb_running_log_dir)
-    
 
-    @property
     def _create_ckpt_callbacks(self):
-        return tf.keras.callbacks.ModelCheckpoint(
-            filepath=self.config.checkpoint_model_filepath,
-            save_best_only=True
+        checkpoint_dir = os.path.join(
+            self.config.checkpoint_root_dir,
+            "model_checkpoint",
         )
-
+        return tf.keras.callbacks.ModelCheckpoint(
+            filepath=checkpoint_dir,
+            # other parameters...
+        )
 
     def get_tb_ckpt_callbacks(self):
         return [
-            self._create_tb_callbacks,
-            self._create_ckpt_callbacks
+            self._create_tb_callbacks(),  # Don't call the function here, just pass the reference
+            self._create_ckpt_callbacks(),  # Don't call the function here, just pass the reference
         ]
